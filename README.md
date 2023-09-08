@@ -2,7 +2,8 @@
 
 Containers Wrapper is a Go library that provides a convenient and unified interface for interacting with container engines such as Docker, Podman, and Containerd. It simplifies container management tasks by wrapping the low-level commands and providing Go functions for common container operations.
 
-> **Warning:** This library is at its first release and needs more testing. Please use it with caution.
+> **Warning**
+> This library is at its first release and needs more testing. Please use it with caution.
 
 ## Supported Container Engines
 
@@ -13,7 +14,8 @@ Containers Wrapper currently supports the following container engines:
 - [Containerd](https://containerd.io/) (partially supported)
 - [lilipod](https://github.com/89luca89/lilipod) (partially supported)
 
-> **Note:** Containers Wrapper potentially supports any container engine that follows the Podman command interface, just populate the `ContainerEngine` field of the `CeOptions` struct with the name of the container engine you want to use.
+> **Note**
+> Containers Wrapper potentially supports any container engine that follows the Podman command interface, just populate the `ContainerEngine` field of the `CeOptions` struct with the name of the container engine you want to use.
 
 ## Features
 
