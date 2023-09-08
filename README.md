@@ -86,6 +86,12 @@ func main() {
 
 Please refer to the library's [GoDoc](https://pkg.go.dev/github.com/linux-immutability-tools/containers-wrapper/pkg/cengine) for detailed documentation and examples.
 
+## Plans for the future
+
+- Support for remote container engines (socket, SSH, etc.)
+- Extend support to more functionalities
+- Add support for more container engines
+
 ## Contributing
 
 Contributions to Containers Wrapper are welcome! If you have bug reports, feature requests, or want to contribute code, please feel free to open an issue or submit a pull request.
