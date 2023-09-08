@@ -3,7 +3,6 @@
     <p>Containers Wrapper is a Go library that provides a convenient and unified interface for interacting with container engines such as Docker, Podman, and Containerd. It simplifies container management tasks by wrapping the low-level commands and providing Go functions for common container operations.</p>
 </div>
 
-# Containers Wrapper
 > **Warning**
 > This library is at its first release and needs more testing. Please use it with caution.
 
