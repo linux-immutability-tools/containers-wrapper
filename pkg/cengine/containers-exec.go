@@ -18,13 +18,14 @@ import (
 
 // ExecInContainer executes a command inside a container with the specified
 // ContainerExecOptions.
-func (ce *Ce) ExecInContainer(nameOrId string, options types.ContainerExecOptions) (err error) {
+func (ce *Ce) ExecInContainer(nameOrId string, options types.ContainerExecOptions, command []string) (err error) {
 	parsedArgs := tools.Struct2Args(options, types.ContainerExecOptions{})
 	args := []string{"exec"}
 	args = append(args, parsedArgs...)
 	args = append(args, nameOrId)
+	args = append(args, command...)
 
-	exitCode, _, err := ce.RunCommand(args, []string{}, false)
+	exitCode, _, err := ce.RunCommand(args, []string{}, true)
 
 	switch exitCode {
 	case 0:
