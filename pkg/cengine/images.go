@@ -37,6 +37,13 @@ func (ce *Ce) Images(filters map[string][]string) (images []types.ImageInfo, err
 
 	switch exitCode {
 	case 0:
+		// if only 1 result, add [] to make it a valid json array
+		// tbh podman should do this by itself, it's called
+		// standard compliance
+		if output[0] != '[' {
+			output = "[" + output + "]"
+		}
+
 		var imageOutputs []types.ImageOutput
 		err = json.Unmarshal([]byte(output), &imageOutputs)
 		if err != nil {
