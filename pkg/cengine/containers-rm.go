@@ -11,8 +11,6 @@ package cengine
 		such as Docker, Podman, and Containerd.
 */
 
-import "github.com/linux-immutability-tools/containers-wrapper/pkg/types"
-
 // RemoveContainer removes a container.
 // The nameOrId parameter is the name or id of the container to remove.
 // The force parameter is a boolean that indicates whether to force the
@@ -29,15 +27,6 @@ func (ce *Ce) RemoveContainer(nameOrId string, force, volumes bool) (err error) 
 	}
 	args = append(args, nameOrId)
 
-	exitCode, _, err := ce.RunCommand(args, []string{}, false)
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainersNotFound
-	}
-
+	_, err = ce.RunCommand(args, []string{}, false)
 	return
 }

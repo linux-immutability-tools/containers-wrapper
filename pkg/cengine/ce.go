@@ -50,45 +50,41 @@ func NewCe(options types.CeOptions) (ce Ce, err error) {
 // the exit code, the output and an error if any.
 // If print is true, the output is printed to stdout and stderr and output
 // is set to an empty string.
-func (ce *Ce) RunCommand(args []string, env []string, print bool) (exitCode int, output string, err error) {
-	if os.Getenv("CE_SYS_EXEC") != "" {
+func (ce *Ce) RunCommand(args []string, env []string, print bool) (output string, err error) {
+	if os.Getenv("CE_NO_SYS_EXEC") != "" {
 
-		args = append([]string{ce.EngineBinary}, args...)
-		env = append(os.Environ(), env...)
-		env = append(env, ce.Options.Env...)
-		env = append(env, ce.Options.Args...)
-		err = syscall.Exec(ce.EngineBinary, args, env)
-		if err != nil {
-			fmt.Println("syscall.Exec failed:", err)
-			exitCode = 1
+		cmd := exec.Command(ce.EngineBinary, args...)
+		cmd.Env = os.Environ()
+		cmd.Env = append(ce.Options.Env, cmd.Env...)
+		cmd.Env = append(cmd.Env, env...)
+		cmd.Args = append(cmd.Args, ce.Options.Args...)
+
+		if print {
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err = cmd.Run()
+			output = ""
+		} else {
+			var out []byte
+			out, err = cmd.CombinedOutput()
+			output = string(out)
 		}
 
-		exitCode = 0
+		if os.Getenv("CE_DEBUG") != "" {
+			fmt.Print("\n\nCommand was:", cmd.String(), "\n\n")
+		}
+
 		return
 	}
 
-	cmd := exec.Command(ce.EngineBinary, args...)
-	cmd.Env = os.Environ()
-	cmd.Env = append(ce.Options.Env, cmd.Env...)
-	cmd.Env = append(cmd.Env, env...)
-	cmd.Args = append(cmd.Args, ce.Options.Args...)
-
-	if print {
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err = cmd.Run()
-		output = ""
-	} else {
-		var out []byte
-		out, err = cmd.CombinedOutput()
-		output = string(out)
+	args = append([]string{ce.EngineBinary}, args...)
+	env = append(os.Environ(), env...)
+	env = append(env, ce.Options.Env...)
+	env = append(env, ce.Options.Args...)
+	err = syscall.Exec(ce.EngineBinary, args, env)
+	if err != nil {
+		fmt.Println("syscall.Exec failed:", err)
 	}
-
-	if os.Getenv("CE_DEBUG") != "" {
-		fmt.Print("\n\nCommand was:", cmd.String(), "\n\n")
-	}
-
-	exitCode = cmd.ProcessState.ExitCode()
 
 	return
 }

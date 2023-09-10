@@ -27,29 +27,27 @@ func (ce *Ce) Containers(filters map[string][]string) (containers []types.Contai
 		}
 	}
 
-	exitCode, output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, false)
+	if err != nil {
+		return
+	}
 
-	switch exitCode {
-	case 0:
-		var containerOutputs []types.ContainerInfo
-		err = json.Unmarshal([]byte(output), &containerOutputs)
-		if err != nil {
-			return
-		}
+	var containerOutputs []types.ContainerInfo
+	err = json.Unmarshal([]byte(output), &containerOutputs)
+	if err != nil {
+		return
+	}
 
-		for _, container := range containerOutputs {
-			containers = append(containers, types.ContainerInfo{
-				Id:      container.Id,
-				Image:   container.Image,
-				Command: container.Command,
-				Created: container.Created,
-				Status:  container.Status,
-				Ports:   container.Ports,
-				Names:   container.Names,
-			})
-		}
-	case 1:
-		err = types.ErrContainersGenericFailure
+	for _, container := range containerOutputs {
+		containers = append(containers, types.ContainerInfo{
+			Id:      container.Id,
+			Image:   container.Image,
+			Command: container.Command,
+			Created: container.Created,
+			Status:  container.Status,
+			Ports:   container.Ports,
+			Names:   container.Names,
+		})
 	}
 
 	return

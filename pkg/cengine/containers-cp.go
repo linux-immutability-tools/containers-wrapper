@@ -11,23 +11,12 @@ package cengine
 		such as Docker, Podman, and Containerd.
 */
 
-import "github.com/linux-immutability-tools/containers-wrapper/pkg/types"
-
 // ReceiveFromContainer receives a file from a container.
 // The nameOrId parameter is the name or id of the container to receive the file from.
 // The source parameter is the path to the file to receive, while the destination
 // parameter is the path where the file will be stored.
 func (ce *Ce) ReceiveFromContainer(nameOrId, source, destination string) (err error) {
-	exitCode, _, err := ce.RunCommand([]string{"cp", nameOrId + ":" + source, destination}, []string{}, false)
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainersNotFound
-	}
-
+	_, err = ce.RunCommand([]string{"cp", nameOrId + ":" + source, destination}, []string{}, false)
 	return
 }
 
@@ -36,18 +25,9 @@ func (ce *Ce) ReceiveFromContainer(nameOrId, source, destination string) (err er
 // The source parameter is the path to the file to send, while the destination
 // parameter is the path where the file will be stored inside the container.
 func (ce *Ce) SendToContainer(nameOrId, source, destination string) (err error) {
-	exitCode, _, err := ce.RunCommand([]string{"cp", source, nameOrId + ":" + destination}, []string{}, false)
+	_, err = ce.RunCommand([]string{"cp", source, nameOrId + ":" + destination}, []string{}, false)
 	if err != nil {
 		return
 	}
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainersNotFound
-	}
-
 	return
 }

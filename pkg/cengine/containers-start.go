@@ -12,8 +12,6 @@ package cengine
 */
 
 import (
-	"fmt"
-
 	"github.com/linux-immutability-tools/containers-wrapper/pkg/types"
 )
 
@@ -30,7 +28,6 @@ func (ce *Ce) StartContainer(nameOrId string, interactive bool) (err error) {
 	}
 	args = append(args, nameOrId)
 
-	_, out, err := ce.RunCommand(args, []string{}, true)
-	fmt.Println(out)
+	_, err = ce.RunCommand(args, []string{}, true)
 	return
 }

@@ -23,52 +23,48 @@ import (
 func (ce *Ce) InspectImage(id string) (imageInfo types.ImageInfo, err error) {
 	args := []string{"image", "inspect", id}
 
-	exitCode, output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, false)
+	if err != nil {
+		return
+	}
 
-	switch exitCode {
-	case 0:
-		var imageInfoOutputs []types.ImageOutput
-		err = json.Unmarshal([]byte(output), &imageInfoOutputs)
-		if err != nil {
-			return
-		}
+	var imageInfoOutputs []types.ImageOutput
+	err = json.Unmarshal([]byte(output), &imageInfoOutputs)
+	if err != nil {
+		return
+	}
 
-		if len(imageInfoOutputs) == 0 {
-			err = types.ErrImagesNotFound
-			return
-		} else if len(imageInfoOutputs) > 1 {
-			err = types.ErrImagesMultipleResults
-			return
-		}
-
-		imageInfoOutput := imageInfoOutputs[0]
-
-		if len(imageInfoOutput.RepoTags) == 0 {
-			err = types.ErrImagesHasMalformedName
-			return
-		}
-
-		nameItems := strings.Split(imageInfoOutput.RepoTags[0], ":")
-		if len(nameItems) != 2 {
-			err = types.ErrImagesHasMalformedName
-			return
-		}
-
-		repository := nameItems[0]
-		tag := nameItems[1]
-
-		imageInfo = types.ImageInfo{
-			Id:         imageInfoOutput.Id,
-			Repository: repository,
-			Tag:        tag,
-			Created:    imageInfoOutput.CreatedAt,
-			Size:       imageInfoOutput.Size,
-			Config:     imageInfoOutput.Config,
-		}
-	case 1:
-		err = types.ErrImagesGenericFailure
-	case 125:
+	if len(imageInfoOutputs) == 0 {
 		err = types.ErrImagesNotFound
+		return
+	} else if len(imageInfoOutputs) > 1 {
+		err = types.ErrImagesMultipleResults
+		return
+	}
+
+	imageInfoOutput := imageInfoOutputs[0]
+
+	if len(imageInfoOutput.RepoTags) == 0 {
+		err = types.ErrImagesHasMalformedName
+		return
+	}
+
+	nameItems := strings.Split(imageInfoOutput.RepoTags[0], ":")
+	if len(nameItems) != 2 {
+		err = types.ErrImagesHasMalformedName
+		return
+	}
+
+	repository := nameItems[0]
+	tag := nameItems[1]
+
+	imageInfo = types.ImageInfo{
+		Id:         imageInfoOutput.Id,
+		Repository: repository,
+		Tag:        tag,
+		Created:    imageInfoOutput.CreatedAt,
+		Size:       imageInfoOutput.Size,
+		Config:     imageInfoOutput.Config,
 	}
 
 	return

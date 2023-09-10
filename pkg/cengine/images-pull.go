@@ -11,8 +11,6 @@ package cengine
 		such as Docker, Podman, and Containerd.
 */
 
-import "github.com/linux-immutability-tools/containers-wrapper/pkg/types"
-
 // Pull pulls the given image with the given tag using the defined container
 // engine.
 // If arch is not empty, it will be used to pull the image for the given arch.
@@ -32,16 +30,6 @@ func (ce *Ce) PullImage(image string, tag string, arch string, noTlsVerify bool,
 		args = append(args, "--tls-verify=false")
 	}
 
-	exitCode, _, err := ce.RunCommand(args, []string{}, print)
-
-	switch exitCode {
-	case 0:
-		err = nil
-	case 1:
-		err = types.ErrImagesGenericFailure
-	case 125:
-		err = types.ErrImagesNotFound
-	}
-
+	_, err = ce.RunCommand(args, []string{}, print)
 	return
 }

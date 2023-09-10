@@ -57,14 +57,6 @@ func (ce *Ce) BuildImage(containerfile string, options types.BuildOptions) (err 
 	args = append(args, parsedArgs...)
 	args = append(args, "-f", containerfile, ".")
 
-	exitCode, _, err := ce.RunCommand(args, []string{}, true)
-
-	switch exitCode {
-	case 0:
-		return
-	case 1:
-		err = types.ErrImagesGenericFailure
-	}
-
+	_, err = ce.RunCommand(args, []string{}, true)
 	return
 }

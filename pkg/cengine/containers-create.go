@@ -25,16 +25,8 @@ func (ce *Ce) CreateContainer(imageOrId string, options types.ContainerCreateOpt
 	args = append(args, parsedArgs...)
 	args = append(args, imageOrId)
 
-	exitCode, output, err := ce.RunCommand(args, []string{}, false)
-
-	switch exitCode {
-	case 0:
-		containerId = strings.TrimSuffix(output, "\n")
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainerNameAlreadyInUse
-	}
+	output, err := ce.RunCommand(args, []string{}, false)
+	containerId = strings.TrimSuffix(output, "\n")
 
 	return
 }

@@ -33,48 +33,44 @@ func (ce *Ce) Images(filters map[string][]string) (images []types.ImageInfo, err
 		}
 	}
 
-	exitCode, output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, false)
+	if err != nil {
+		return
+	}
 
-	switch exitCode {
-	case 0:
-		// if only 1 result, add [] to make it a valid json array
-		// tbh podman should do this by itself, it's called
-		// standard compliance
-		if output[0] != '[' {
-			output = "[" + output + "]"
+	// if only 1 result, add [] to make it a valid json array
+	// tbh podman should do this by itself, it's called
+	// standard compliance
+	if output[0] != '[' {
+		output = "[" + output + "]"
+	}
+
+	var imageOutputs []types.ImageOutput
+	err = json.Unmarshal([]byte(output), &imageOutputs)
+	if err != nil {
+		return
+	}
+
+	for _, image := range imageOutputs {
+		if len(image.Names) == 0 {
+			continue
 		}
 
-		var imageOutputs []types.ImageOutput
-		err = json.Unmarshal([]byte(output), &imageOutputs)
-		if err != nil {
-			return
+		nameItems := strings.Split(image.Names[0], ":")
+		if len(nameItems) != 2 {
+			continue
 		}
 
-		for _, image := range imageOutputs {
-			if len(image.Names) == 0 {
-				continue
-			}
+		repository := nameItems[0]
+		tag := nameItems[1]
 
-			nameItems := strings.Split(image.Names[0], ":")
-			if len(nameItems) != 2 {
-				continue
-			}
-
-			repository := nameItems[0]
-			tag := nameItems[1]
-
-			images = append(images, types.ImageInfo{
-				Repository: repository,
-				Tag:        tag,
-				Id:         image.Id,
-				Created:    image.CreatedAt,
-				Size:       image.Size,
-			})
-		}
-	case 1:
-		err = types.ErrImagesGenericFailure
-	case 125:
-		err = types.ErrImagesBadFilter
+		images = append(images, types.ImageInfo{
+			Repository: repository,
+			Tag:        tag,
+			Id:         image.Id,
+			Created:    image.CreatedAt,
+			Size:       image.Size,
+		})
 	}
 
 	return

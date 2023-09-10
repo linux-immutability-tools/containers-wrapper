@@ -44,15 +44,6 @@ func (ce *Ce) MountImage(id string, path string) (err error) {
 	}
 
 	args := []string{"image", "mount", id, path}
-	exitCode, _, err := ce.RunCommand(args, []string{}, false)
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrImagesGenericFailure
-	case 125:
-		err = types.ErrImagesNotFound
-	}
-
+	_, err = ce.RunCommand(args, []string{}, false)
 	return
 }

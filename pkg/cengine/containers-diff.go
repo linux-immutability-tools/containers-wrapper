@@ -25,26 +25,23 @@ import (
 // this operation, check the documentation of the container engine you're
 // using to see if it's supported.
 func (ce *Ce) DiffContainer(nameOrId string) (changes []types.ContainerChange, err error) {
-	exitCode, output, err := ce.RunCommand([]string{"diff", nameOrId}, []string{}, false)
+	output, err := ce.RunCommand([]string{"diff", nameOrId}, []string{}, false)
 
-	switch exitCode {
-	case 0:
-		lines := strings.Split(output, "\n")
-		for _, line := range lines {
-			if line == "" {
-				continue
-			}
+	if err != nil {
+		return
+	}
 
-			parts := strings.Split(line, " ")
-			changes = append(changes, types.ContainerChange{
-				Type: parts[0],
-				Path: parts[1],
-			})
+	lines := strings.Split(output, "\n")
+	for _, line := range lines {
+		if line == "" {
+			continue
 		}
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainersNotFound
+
+		parts := strings.Split(line, " ")
+		changes = append(changes, types.ContainerChange{
+			Type: parts[0],
+			Path: parts[1],
+		})
 	}
 
 	return

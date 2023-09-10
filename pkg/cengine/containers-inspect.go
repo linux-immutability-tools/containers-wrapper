@@ -20,27 +20,25 @@ import (
 // InspectContainer returns the configuration of a container.
 // The nameOrId parameter is the name or id of the container to inspect.
 func (ce *Ce) InspectContainer(nameOrId string) (container types.ContainerInfo, err error) {
-	exitCode, output, err := ce.RunCommand([]string{"inspect", "--format", "{{json .}}", nameOrId}, []string{}, false)
+	output, err := ce.RunCommand([]string{"inspect", "--format", "{{json .}}", nameOrId}, []string{}, false)
+	if err != nil {
+		return
+	}
 
-	switch exitCode {
-	case 0:
-		var containerOutput types.ContainerInfo
-		err = json.Unmarshal([]byte(output), &containerOutput)
-		if err != nil {
-			return
-		}
+	var containerOutput types.ContainerInfo
+	err = json.Unmarshal([]byte(output), &containerOutput)
+	if err != nil {
+		return
+	}
 
-		container = types.ContainerInfo{
-			Id:      containerOutput.Id,
-			Image:   containerOutput.Image,
-			Command: containerOutput.Command,
-			Created: containerOutput.Created,
-			Status:  containerOutput.Status,
-			Ports:   containerOutput.Ports,
-			Names:   containerOutput.Names,
-		}
-	case 1:
-		err = types.ErrImagesGenericFailure
+	container = types.ContainerInfo{
+		Id:      containerOutput.Id,
+		Image:   containerOutput.Image,
+		Command: containerOutput.Command,
+		Created: containerOutput.Created,
+		Status:  containerOutput.Status,
+		Ports:   containerOutput.Ports,
+		Names:   containerOutput.Names,
 	}
 
 	return

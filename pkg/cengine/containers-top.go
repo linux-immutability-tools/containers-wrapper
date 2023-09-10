@@ -24,38 +24,35 @@ import (
 // container is set up, i.e. if the container is running in privileged
 // mode or not.
 func (ce *Ce) TopContainer(nameOrId string) (processes []types.ContainerProcess, err error) {
-	exitCode, output, err := ce.RunCommand([]string{"top", nameOrId}, []string{}, false)
+	output, err := ce.RunCommand([]string{"top", nameOrId}, []string{}, false)
 
-	switch exitCode {
-	case 0:
-		lines := strings.Split(output, "\n")
-		for _, line := range lines[1:] {
-			parts := strings.Fields(line)
-			if len(parts) < 8 {
-				continue
-			}
+	if err != nil {
+		return
+	}
 
-			pid, err := strconv.Atoi(parts[1])
-			if err != nil {
-				return processes, err
-			}
-			ppid, err := strconv.Atoi(parts[2])
-			if err != nil {
-				return processes, err
-			}
-
-			processes = append(processes, types.ContainerProcess{
-				User: parts[0],
-				Pid:  pid,
-				PPid: ppid,
-				Cpu:  parts[3],
-				Cmd:  parts[7],
-			})
+	lines := strings.Split(output, "\n")
+	for _, line := range lines[1:] {
+		parts := strings.Fields(line)
+		if len(parts) < 8 {
+			continue
 		}
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainersNotFound
+
+		pid, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return processes, err
+		}
+		ppid, err := strconv.Atoi(parts[2])
+		if err != nil {
+			return processes, err
+		}
+
+		processes = append(processes, types.ContainerProcess{
+			User: parts[0],
+			Pid:  pid,
+			PPid: ppid,
+			Cpu:  parts[3],
+			Cmd:  parts[7],
+		})
 	}
 
 	return

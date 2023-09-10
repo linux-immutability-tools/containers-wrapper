@@ -13,8 +13,6 @@ package cengine
 
 import (
 	"fmt"
-
-	"github.com/linux-immutability-tools/containers-wrapper/pkg/types"
 )
 
 // StopContainer stops a container.
@@ -22,15 +20,6 @@ import (
 // The timeout parameter is the number of seconds to wait before killing
 // the container.
 func (ce *Ce) StopContainer(nameOrId string, timeout int) (err error) {
-	exitCode, _, err := ce.RunCommand([]string{"stop", "-t", fmt.Sprintf("%d", timeout), nameOrId}, []string{}, false)
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrContainersGenericFailure
-	case 125:
-		err = types.ErrContainersNotFound
-	}
-
+	_, err = ce.RunCommand([]string{"stop", "-t", fmt.Sprintf("%d", timeout), nameOrId}, []string{}, false)
 	return
 }

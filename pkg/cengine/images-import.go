@@ -38,13 +38,6 @@ func (ce *Ce) ImportImage(tarball string, repository string, tag string) (err er
 		}
 	}
 
-	exitCode, _, err := ce.RunCommand([]string{"image", "import", tarball, repository + ":" + tag}, []string{}, false)
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrImagesGenericFailure
-	}
-
+	_, err = ce.RunCommand([]string{"image", "import", tarball, repository + ":" + tag}, []string{}, false)
 	return
 }

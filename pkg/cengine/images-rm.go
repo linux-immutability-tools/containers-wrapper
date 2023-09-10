@@ -11,20 +11,9 @@ package cengine
 		such as Docker, Podman, and Containerd.
 */
 
-import "github.com/linux-immutability-tools/containers-wrapper/pkg/types"
-
 // RemoveImage removes an image from the system.
 // The id parameter is the id of the image to remove.
 func (ce *Ce) RemoveImage(id string) (err error) {
-	exitCode, _, err := ce.RunCommand([]string{"image", "rm", id}, []string{}, false)
-
-	switch exitCode {
-	case 0:
-	case 1:
-		err = types.ErrImagesGenericFailure
-	case 125:
-		err = types.ErrImagesNotFound
-	}
-
+	_, err = ce.RunCommand([]string{"image", "rm", id}, []string{}, false)
 	return
 }
