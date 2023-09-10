@@ -12,6 +12,7 @@ package cengine
 */
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/linux-immutability-tools/containers-wrapper/pkg/tools"
@@ -19,14 +20,17 @@ import (
 )
 
 // CreateContainer creates a new container with the specified ContainerCreateInfo
-func (ce *Ce) CreateContainer(imageOrId string, options types.ContainerCreateOptions) (containerId string, err error) {
+func (ce *Ce) CreateContainer(imageOrId string, options types.ContainerCreateOptions, extraArgs ...string) (containerId string, err error) {
 	parsedArgs := tools.Struct2Args(options, types.ContainerCreateOptions{})
 	args := []string{"create"}
 	args = append(args, parsedArgs...)
 	args = append(args, imageOrId)
+	args = append(args, extraArgs...)
 
 	output, err := ce.RunCommand(args, []string{}, true)
 	containerId = strings.TrimSuffix(output, "\n")
+
+	fmt.Println("Container creation cmd: podman", strings.Join(args, " "))
 
 	return
 }
