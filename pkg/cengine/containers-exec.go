@@ -11,20 +11,18 @@ package cengine
 		such as Docker, Podman, and Containerd.
 */
 
-import (
-	"github.com/linux-immutability-tools/containers-wrapper/pkg/tools"
-	"github.com/linux-immutability-tools/containers-wrapper/pkg/types"
-)
-
-// ExecInContainer executes a command inside a container with the specified
-// ContainerExecOptions.
-func (ce *Ce) ExecInContainer(nameOrId string, options types.ContainerExecOptions, command []string, getOutput bool) (out string, err error) {
-	parsedArgs := tools.Struct2Args(options, types.ContainerExecOptions{})
+func (ce *Ce) ExecInContainer(nameOrId string, interactive bool, command string, workdir string, extraArgs ...string) (err error) {
 	args := []string{"exec"}
-	args = append(args, parsedArgs...)
+	if interactive {
+		args = append(args, "-it")
+	}
+	if workdir != "" {
+		args = append(args, "--workdir", workdir)
+	}
 	args = append(args, nameOrId)
-	args = append(args, command...)
+	args = append(args, command)
+	args = append(args, extraArgs...)
 
-	out, err = ce.RunCommand(args, []string{}, getOutput)
+	_, err = ce.RunCommand(args, []string{}, false)
 	return
 }
