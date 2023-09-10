@@ -38,8 +38,10 @@ var (
 
 	// Containers errors
 
-	ErrContainersGenericFailure  = errors.New("containers [FAIL]: for unknown reason")
-	ErrContainersBadFilter       = errors.New("containers [FAIL]: invalid filter specified")
-	ErrContainersNotFound        = errors.New("containers [FAIL]: container not found")
-	ErrContainerNameAlreadyInUse = errors.New("containers [FAIL]: container name already in use")
+	ErrContainersGenericFailure   = errors.New("containers [FAIL]: for unknown reason")
+	ErrContainersBadFilter        = errors.New("containers [FAIL]: invalid filter specified")
+	ErrContainersNotFound         = errors.New("containers [FAIL]: container not found")
+	ErrContainerNameAlreadyInUse  = errors.New("containers [FAIL]: container name already in use")
+	ErrContainersPermissionDenied = errors.New("containers [FAIL]: permission denied")
+	ErrContainersCommandNotFound  = errors.New("containers [FAIL]: command not found")
 )
