@@ -45,8 +45,7 @@ func Struct2Args(options interface{}, original interface{}) (args []string) {
 					continue
 				}
 
-				args = append(args, fmt.Sprintf("--%s", fieldName))
-				args = append(args, fmt.Sprintf("%v", optValue))
+				args = append(args, fmt.Sprintf("--%s=%v", fieldName, optValue))
 			}
 		}
 	}
