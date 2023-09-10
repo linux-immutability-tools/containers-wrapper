@@ -1,18 +1,16 @@
 package cengine
 
 import (
-	"github.com/linux-immutability-tools/containers-wrapper/pkg/tools"
 	"github.com/linux-immutability-tools/containers-wrapper/pkg/types"
 )
 
 // RunInContainer executes a command inside a new container with the specified
 // ContainerExecOptions.
-func (ce *Ce) RunInContainer(imageOrId string, options types.ContainerExecOptions, command []string) (err error) {
-	parsedArgs := tools.Struct2Args(options, types.ContainerExecOptions{})
+func (ce *Ce) RunInContainer(imageOrId string, command string) (err error) {
 	args := []string{"run"}
-	args = append(args, parsedArgs...)
+	args = append(args, "--rm")
+	args = append(args, "--entrypoint", command)
 	args = append(args, imageOrId)
-	args = append(args, command...)
 
 	exitCode, _, err := ce.RunCommand(args, []string{}, true)
 
