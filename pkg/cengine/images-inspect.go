@@ -23,7 +23,7 @@ import (
 func (ce *Ce) InspectImage(id string) (imageInfo types.ImageInfo, err error) {
 	args := []string{"image", "inspect", id}
 
-	output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, true)
 	if err != nil {
 		return
 	}

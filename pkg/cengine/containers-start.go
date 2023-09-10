@@ -28,6 +28,6 @@ func (ce *Ce) StartContainer(nameOrId string, interactive bool) (err error) {
 	}
 	args = append(args, nameOrId)
 
-	_, err = ce.RunCommand(args, []string{}, true)
+	_, err = ce.RunCommand(args, []string{}, false)
 	return
 }

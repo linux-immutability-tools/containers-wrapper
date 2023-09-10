@@ -57,6 +57,6 @@ func (ce *Ce) BuildImage(containerfile string, options types.BuildOptions) (err 
 	args = append(args, parsedArgs...)
 	args = append(args, "-f", containerfile, ".")
 
-	_, err = ce.RunCommand(args, []string{}, true)
+	_, err = ce.RunCommand(args, []string{}, false)
 	return
 }

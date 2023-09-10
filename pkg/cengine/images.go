@@ -33,7 +33,7 @@ func (ce *Ce) Images(filters map[string][]string) (images []types.ImageInfo, err
 		}
 	}
 
-	output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, true)
 	if err != nil {
 		return
 	}

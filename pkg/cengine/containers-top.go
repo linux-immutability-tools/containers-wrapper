@@ -24,7 +24,7 @@ import (
 // container is set up, i.e. if the container is running in privileged
 // mode or not.
 func (ce *Ce) TopContainer(nameOrId string) (processes []types.ContainerProcess, err error) {
-	output, err := ce.RunCommand([]string{"top", nameOrId}, []string{}, false)
+	output, err := ce.RunCommand([]string{"top", nameOrId}, []string{}, true)
 
 	if err != nil {
 		return

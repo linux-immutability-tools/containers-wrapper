@@ -11,6 +11,6 @@ func (ce *Ce) RunInContainer(imageOrId string, interactive bool, command string)
 	args = append(args, "--entrypoint", command)
 	args = append(args, imageOrId)
 
-	_, err = ce.RunCommand(args, []string{}, true)
+	_, err = ce.RunCommand(args, []string{}, false)
 	return
 }

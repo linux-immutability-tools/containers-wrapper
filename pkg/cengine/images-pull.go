@@ -16,7 +16,7 @@ package cengine
 // If arch is not empty, it will be used to pull the image for the given arch.
 // If noTlsVerify is true, TLS verify will be disabled (note that this is not
 // supported by all container engines and could be failure prone).
-func (ce *Ce) PullImage(image string, tag string, arch string, noTlsVerify bool, print bool) (err error) {
+func (ce *Ce) PullImage(image string, tag string, arch string, noTlsVerify bool, getOutput bool) (out string, err error) {
 	args := []string{"pull", image + ":" + tag}
 
 	if arch != "" {
@@ -30,6 +30,6 @@ func (ce *Ce) PullImage(image string, tag string, arch string, noTlsVerify bool,
 		args = append(args, "--tls-verify=false")
 	}
 
-	_, err = ce.RunCommand(args, []string{}, print)
+	out, err = ce.RunCommand(args, []string{}, getOutput)
 	return
 }

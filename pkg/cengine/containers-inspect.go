@@ -20,7 +20,7 @@ import (
 // InspectContainer returns the configuration of a container.
 // The nameOrId parameter is the name or id of the container to inspect.
 func (ce *Ce) InspectContainer(nameOrId string) (container types.ContainerInfo, err error) {
-	output, err := ce.RunCommand([]string{"inspect", "--format", "{{json .}}", nameOrId}, []string{}, false)
+	output, err := ce.RunCommand([]string{"inspect", "--format", "{{json .}}", nameOrId}, []string{}, true)
 	if err != nil {
 		return
 	}

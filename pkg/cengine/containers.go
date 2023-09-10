@@ -27,7 +27,7 @@ func (ce *Ce) Containers(filters map[string][]string) (containers []types.Contai
 		}
 	}
 
-	output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, true)
 	if err != nil {
 		return
 	}

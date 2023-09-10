@@ -25,7 +25,7 @@ func (ce *Ce) CreateContainer(imageOrId string, options types.ContainerCreateOpt
 	args = append(args, parsedArgs...)
 	args = append(args, imageOrId)
 
-	output, err := ce.RunCommand(args, []string{}, false)
+	output, err := ce.RunCommand(args, []string{}, true)
 	containerId = strings.TrimSuffix(output, "\n")
 
 	return
