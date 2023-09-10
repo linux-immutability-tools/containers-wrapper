@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 
 	"github.com/linux-immutability-tools/containers-wrapper/pkg/types"
 )
@@ -50,6 +51,22 @@ func NewCe(options types.CeOptions) (ce Ce, err error) {
 // If print is true, the output is printed to stdout and stderr and output
 // is set to an empty string.
 func (ce *Ce) RunCommand(args []string, env []string, print bool) (exitCode int, output string, err error) {
+	if os.Getenv("CE_SYS_EXEC") != "" {
+
+		args = append([]string{ce.EngineBinary}, args...)
+		env = append(os.Environ(), env...)
+		env = append(env, ce.Options.Env...)
+		env = append(env, ce.Options.Args...)
+		err = syscall.Exec(ce.EngineBinary, args, env)
+		if err != nil {
+			fmt.Println("syscall.Exec failed:", err)
+			exitCode = 1
+		}
+
+		exitCode = 0
+		return
+	}
+
 	cmd := exec.Command(ce.EngineBinary, args...)
 	cmd.Env = os.Environ()
 	cmd.Env = append(ce.Options.Env, cmd.Env...)
@@ -72,5 +89,6 @@ func (ce *Ce) RunCommand(args []string, env []string, print bool) (exitCode int,
 	}
 
 	exitCode = cmd.ProcessState.ExitCode()
+
 	return
 }

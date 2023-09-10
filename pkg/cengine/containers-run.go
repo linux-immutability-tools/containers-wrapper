@@ -15,7 +15,7 @@ func (ce *Ce) RunInContainer(imageOrId string, interactive bool, command string)
 	args = append(args, "--entrypoint", command)
 	args = append(args, imageOrId)
 
-	exitCode, _, err := ce.RunCommand(args, []string{}, false)
+	exitCode, _, err := ce.RunCommand(args, []string{}, true)
 
 	switch exitCode {
 	case 0:
